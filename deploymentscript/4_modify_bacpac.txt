@@ -1,6 +1,6 @@
 /*
  *
- * Encrypt Firstname column in dbo.patients, see DDL below
+ * Encrypt Firstname column in dbo.patients, see DDL below. Then create new dacpac
  * /
 
 CREATE TABLE [dbo].[Patients] (
