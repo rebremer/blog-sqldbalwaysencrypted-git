@@ -1,0 +1,3 @@
+# Redeploy dacpac
+
+# End result shall be that existing data in firstname columns went from unencrypted to encrypted
