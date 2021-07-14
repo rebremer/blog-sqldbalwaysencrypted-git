@@ -62,6 +62,7 @@ See also picture below.
 
 A Service connection is needed to access the resources in the resource group from Azure DevOps. Go to project settings, service connection and then select Azure Resource Manager. Select Service Principal Authentication and limit scope to your resource group which you created earlier, see also picture below.
 
+![Architecture](pictures/create_service_connection.png)
 
 ### 0.4 Configure and build/release YAML pipeline
 
