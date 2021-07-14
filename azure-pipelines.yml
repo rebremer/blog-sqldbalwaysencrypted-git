@@ -1,0 +1,109 @@
+variables:
+  #
+  # 1. Azure DevOps settings, change with your own
+  AzureServiceConnectionId: 'blog-sqldbalwaysencrypted-servcon'
+  SUBSCRIPTIONID: '513a7987-b0d9-4106-a24d-4b3f49136ea8'
+  #
+  # 2. Unique environment variables,change it with your own
+  SQLSERVER: 'blog-sqldbae-sqlvg<<your unique name>>'
+  AKV: 'blogsqldbaeakvg<<your unique name>>'
+  #
+  # 3. Fixed Environment variables, no need for unique values
+  RG: 'blog-sqldbalwaysencrypted-rg'
+  LOC: 'northeurope'
+  SQLDATABASE: 'blog-sqldbae-db'
+  SQLSERVICEOBJECTIVE: 'S0'
+  SQLLOGIN: 'blogsqldbaesqluser'
+
+trigger:
+- master
+
+resources:
+  repositories:
+  - repository: blog-sqldbalwaysencrypted-devops # change with your own repo name when necessary
+    type: git
+    name: blog-sqldbalwaysencrypted-devops
+    ref: main
+
+stages:
+- stage: Build
+  displayName: Build artifact
+  jobs:
+  - job: CreateBuildArtifactScriptsDacpac
+    pool:
+      vmImage: 'windows-2019'
+    steps:
+    - checkout: blog-sqldbalwaysencrypted-devops
+      path: blog-sqldbalwaysencrypted-devops
+    - task: CopyFiles@2
+      displayName: 'Copy scripts to: $(Build.ArtifactStagingDirectory)'
+      inputs:
+        SourceFolder: '../blog-sqldbalwaysencrypted-devops'
+        TargetFolder: '$(Build.ArtifactStagingDirectory)/blog-sqldbalwaysencrypted-devops'
+    - task: CopyFiles@2
+      displayName: 'Copy ARM to: $(Build.ArtifactStagingDirectory)'
+      inputs:
+        SourceFolder: '../blog-sqldbalwaysencrypted-devops'
+        TargetFolder: '$(Build.ArtifactStagingDirectory)/blog-sqldbalwaysencrypted-devops'
+    - publish: $(Build.ArtifactStagingDirectory)
+      displayName: 'Upload package'
+      artifact: drop
+- stage: DeployTest
+  displayName: 'Deploy dacpac always encrypted'
+  dependsOn: Build
+  condition: succeeded()
+  jobs:
+  - deployment: DeployDacpac
+    pool:
+      vmImage: 'windows-2019'
+    environment: DeployTestDacpac
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: AzureCLI@2
+            displayName: 'Write SPN properties to env variables'
+            inputs:
+              azureSubscription: 'blog-sqldbalwaysencrypted-servcon'
+              scriptType: ps
+              scriptLocation: inlineScript
+              inlineScript: |
+                Write-Host "##vso[task.setvariable variable=tenantId]$env:tenantId"
+                Write-Host "##vso[task.setvariable variable=clientId]$env:servicePrincipalId"
+                Write-Host "##vso[task.setvariable variable=clientSecret]$env:servicePrincipalKey"
+              addSpnToEnvironment: true
+          - task: AzurePowerShell@5
+            displayName: 'Create SQL database'
+            inputs:
+              azureSubscription: $(AzureServiceConnectionId)
+              scriptPath: '$(Pipeline.Workspace)/drop/blog-sqldbalwaysencrypted-devops/deploymentscript/0_deploy_database.ps1'
+              TargetAzurePs: LatestVersion
+              workingDirectory: $(Pipeline.Workspace)/drop/blog-sqldbalwaysencrypted-devops
+          - task: AzurePowerShell@5
+            displayName: 'Create CMK CEK'
+            inputs:
+              azureSubscription: $(AzureServiceConnectionId)
+              scriptPath: '$(Pipeline.Workspace)/drop/blog-sqldbalwaysencrypted-devops/deploymentscript/1_create_cmk_cek_akv.ps1'
+              TargetAzurePs: LatestVersion
+              workingDirectory: $(Pipeline.Workspace)/drop/blog-sqldbalwaysencrypted-devops
+          - task: AzurePowerShell@5
+            displayName: 'Deploy DACPAC unencrypted'
+            inputs:
+              azureSubscription: $(AzureServiceConnectionId)
+              scriptPath: '$(Pipeline.Workspace)/drop/blog-sqldbalwaysencrypted-devops/deploymentscript/2_deploy_dacpac_unencrypted.ps1'
+              TargetAzurePs: LatestVersion
+              workingDirectory: $(Pipeline.Workspace)/drop/blog-sqldbalwaysencrypted-devops
+          - task: AzurePowerShell@5
+            displayName: 'Add data'
+            inputs:
+              azureSubscription: $(AzureServiceConnectionId)
+              scriptPath: '$(Pipeline.Workspace)/drop/blog-sqldbalwaysencrypted-devops/deploymentscript/3_add_data.ps1'
+              TargetAzurePs: LatestVersion
+              workingDirectory: $(Pipeline.Workspace)/drop/blog-sqldbalwaysencrypted-devops
+          - task: AzurePowerShell@5
+            displayName: 'Deploy DACPAC encrypted'
+            inputs:
+              azureSubscription: $(AzureServiceConnectionId)
+              scriptPath: '$(Pipeline.Workspace)/drop/blog-sqldbalwaysencrypted-devops/deploymentscript/4_deploy_dacpac_encrypted.ps1'
+              TargetAzurePs: LatestVersion
+              workingDirectory: $(Pipeline.Workspace)/drop/blog-sqldbalwaysencrypted-devops
