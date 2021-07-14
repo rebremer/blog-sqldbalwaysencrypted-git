@@ -1,12 +1,12 @@
-# Azure DevOps project that deploys a DACPAC to a SQLDB using always encrypted 
+# Azure DevOps project that publishes a DACPAC to a SQLDB using always encrypted 
 
-*TLTR: Create Azure DevOps project using azure-pipelines.yml, deploy 1st DACPAC to SQLDB, add data to table, deploy 2nd DACPAC to SQLDB creating encrypted columns and data*
+*TLTR: Create Azure DevOps project using azure-pipelines.yml, publish 1st DACPAC to SQLDB, add data to table, publish 2nd DACPAC to SQLDB creating encrypted columns and data*
 
 Main properties of project:
 
 -	Key material (CMK, CEK) is set outside of DACPAC using PowerShell. This enables deployment of DACPAC to multiple environments 
 -	Azure DevOps pipeline is idempotent. That is:
-    - Infrastructure and DACPAC is deployed, record is added to table, three columns are encrypted by deploying new DACPAC. These steps can be executed N times.
+    - Infrastructure and DACPAC is deployed, record is added to table, three columns are encrypted by publishing new DACPAC. These steps can be executed N times.
 
 To achieve this, the following is done:
 
@@ -22,9 +22,9 @@ The following steps will be executed:
 2. Run scripts that does the following:
    - Deploy database and key vault
    - Create CMK/CEK in key vault and database
-   - Deploy 1st DACPAC in which only a dummy column is encrypted
+   - Publish 1st DACPAC in which only a dummy column is encrypted
    - Add data to table
-   - Deploy 2nd DACPAC that encrypts 4 columns. Part of the processe is encrypting data that is already part of the pipeline
+   - Publish 2nd DACPAC that encrypts 4 columns. Part of the processe is encrypting data that is already part of the pipeline
 3. Rerun script to test idempotency
 
 ## 0. Setup Azure DevOps CI/CD project 
