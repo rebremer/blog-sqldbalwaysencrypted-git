@@ -39,8 +39,16 @@ CREATE TABLE [dbo].[ErrorLog] (
 GO
 CREATE TABLE [dbo].[Patients] (
     [PatientId]     INT           IDENTITY (1, 1) NOT NULL,
-    [SSN]           CHAR (11)     NOT NULL,
-    [FirstName]     NVARCHAR (50) NULL,
+    [SSN]           CHAR (11)     COLLATE Latin1_General_BIN2  ENCRYPTED WITH (
+     COLUMN_ENCRYPTION_KEY = [CEK_Auto1],
+     ALGORITHM = N'AEAD_AES_256_CBC_HMAC_SHA_256',
+     ENCRYPTION_TYPE = DETERMINISTIC
+    ) NOT NULL,
+    [FirstName]     NVARCHAR (50)  ENCRYPTED WITH (
+     COLUMN_ENCRYPTION_KEY = [CEK_Auto1],
+     ALGORITHM = N'AEAD_AES_256_CBC_HMAC_SHA_256',
+     ENCRYPTION_TYPE = RANDOMIZED
+    )                             NULL,
     [LastName]      NVARCHAR (50) NULL,
     [MiddleName]    NVARCHAR (50) NULL,
     [StreetAddress] NVARCHAR (50) NULL,
@@ -48,7 +56,11 @@ CREATE TABLE [dbo].[Patients] (
     [ZipCode]       CHAR (5)      NULL,
     [State]         CHAR (2)      NULL,
     [FootballClub]  NVARCHAR (50) NULL,
-    [BirthDate]     DATE          NOT NULL PRIMARY KEY CLUSTERED ([PatientId] ASC)
+    [BirthDate]     DATE  ENCRYPTED WITH (
+     COLUMN_ENCRYPTION_KEY = [CEK_Auto1],
+     ALGORITHM = N'AEAD_AES_256_CBC_HMAC_SHA_256',
+     ENCRYPTION_TYPE = RANDOMIZED
+    )                             NOT NULL PRIMARY KEY CLUSTERED ([PatientId] ASC)
 );
 
 GO
