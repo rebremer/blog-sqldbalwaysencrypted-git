@@ -11,8 +11,8 @@ Main properties of project:
 To achieve this, the following is done:
 
 -	DACPAC is filled with dummy values of CMK and CEK, see [here](https://github.com/rebremer/blog-sqldbalwaysencrypted-git/blob/master/data/testdacpacsql-unencrypted/model.sql#L504) and [here](https://github.com/rebremer/blog-sqldbalwaysencrypted-git/blob/master/data/testdacpacsql-unencrypted/model.sql#L511). 
-- Command line tool SqlPackage.exe is instructed to ignore the CMK and CEK from the DACPAC when publishing it to SQLDB (since the CMK and CEK are already set outside and present in SQLDB), see [here](https://github.com/rebremer/blog-sqldbalwaysencrypted-git/blob/master/deploymentscript/1_create_cmk_cek_akv.ps1#L17). 
-- Although CMK is filled with a dummy reference to a key vault key, the key vault key shall exist. For that purpse, a dummy key is created in the key creation script, see [here](https://github.com/rebremer/blog-sqldbalwaysencrypted-git/blob/master/deploymentscript/1_create_cmk_cek_akv.ps1#L39). 
+- Command line tool SqlPackage.exe is instructed to ignore the CMK and CEK from the DACPAC while publishing, see [here](https://github.com/rebremer/blog-sqldbalwaysencrypted-git/blob/master/deploymentscript/4_deploy_dacpac_encrypted.ps1#L18). 
+- Although CMK is filled with a dummy reference to a key vault key, the key must exist in the key vault. For that purpse, a dummy key is created as part of the key creation script, see [here](https://github.com/rebremer/blog-sqldbalwaysencrypted-git/blob/master/deploymentscript/1_create_cmk_cek_akv.ps1#L39). 
 
 The following steps will be executed:
 
