@@ -39,16 +39,16 @@ CREATE TABLE [dbo].[ErrorLog] (
 GO
 CREATE TABLE [dbo].[Patients] (
     [PatientId]     INT           IDENTITY (1, 1) NOT NULL,
-    [SSN]           CHAR (11)     COLLATE Latin1_General_BIN2  ENCRYPTED WITH (
+    [SSN]           CHAR (11)  ENCRYPTED WITH (
      COLUMN_ENCRYPTION_KEY = [CEK_Auto1],
      ALGORITHM = N'AEAD_AES_256_CBC_HMAC_SHA_256',
      ENCRYPTION_TYPE = DETERMINISTIC
-    ) NOT NULL,
-    [FirstName]     NVARCHAR (50) COLLATE Latin1_General_BIN2  ENCRYPTED WITH (
+    )                             NOT NULL,
+    [FirstName]     NVARCHAR (50)  ENCRYPTED WITH (
      COLUMN_ENCRYPTION_KEY = [CEK_Auto1],
      ALGORITHM = N'AEAD_AES_256_CBC_HMAC_SHA_256',
-     ENCRYPTION_TYPE = DETERMINISTIC
-    ) NULL,
+     ENCRYPTION_TYPE = RANDOMIZED
+    )                             NULL,
     [LastName]      NVARCHAR (50) NULL,
     [MiddleName]    NVARCHAR (50) NULL,
     [StreetAddress] NVARCHAR (50) NULL,
@@ -60,13 +60,7 @@ CREATE TABLE [dbo].[Patients] (
      COLUMN_ENCRYPTION_KEY = [CEK_Auto1],
      ALGORITHM = N'AEAD_AES_256_CBC_HMAC_SHA_256',
      ENCRYPTION_TYPE = RANDOMIZED
-    )                             NOT NULL,
-    [Dummy]         NVARCHAR (50) COLLATE Latin1_General_BIN2  ENCRYPTED WITH (
-     COLUMN_ENCRYPTION_KEY = [CEK_Auto1],
-     ALGORITHM = N'AEAD_AES_256_CBC_HMAC_SHA_256',
-     ENCRYPTION_TYPE = DETERMINISTIC
-    ) NULL,
-    PRIMARY KEY CLUSTERED ([PatientId] ASC)
+    )                             NOT NULL PRIMARY KEY CLUSTERED ([PatientId] ASC)
 );
 
 GO
@@ -522,7 +516,7 @@ GO
 CREATE COLUMN MASTER KEY [CMK_Auto1]
 WITH (
      KEY_STORE_PROVIDER_NAME = N'AZURE_KEY_VAULT',
-     KEY_PATH = N''
+     KEY_PATH = N'https://blogsqldbaeakvg.vault.azure.net/keys/dummyrbr'
 );
 
 GO

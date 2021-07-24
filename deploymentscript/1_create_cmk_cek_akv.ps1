@@ -34,3 +34,6 @@ Add-SqlAzureAuthenticationContext -ClientID $env:clientId -Secret $env:clientSec
 # Generate a column encryption key, encrypt it with the column master key and create column encryption key metadata in the database. 
 $cekName = "CEK_Auto1"
 New-SqlColumnEncryptionKey -Name $cekName -InputObject $databaseInstance -ColumnMasterKey $cmkName
+
+# Finally, create a dummy key. This dummy key is referred to in DACPAC to validate DACPAC, but is not used for encryption/decryption (that is CMKAuto1 created earlier)
+$akvKey = Add-AzKeyVaultKey -VaultName $env:AKV -Name "dummyrbr" -Destination "Software"

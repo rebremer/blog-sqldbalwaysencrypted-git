@@ -10,10 +10,9 @@ Main properties of project:
 
 To achieve this, the following is done:
 
--	DACPAC is filled with dummy values of CMK and CEK, see [here](https://github.com/rebremer/blog-sqldbalwaysencrypted-git/blob/master/data/testdacpacsql-dummycolumn-encrypted/model.sql#L510) and [here](https://github.com/rebremer/blog-sqldbalwaysencrypted-git/blob/master/data/testdacpacsql-dummycolumn-encrypted/model.sql#L517). Subsequently, command line tool SqlPackage.exe is instructed to ignore the CMK and CEK from the DACPAC when publishing it to SQLDB (since the CMK and CEK are already set outside and present in SQLDB), see [here](https://github.com/rebremer/blog-sqldbalwaysencrypted-git/blob/master/data/testdacpacsql-dummycolumn-encrypted/model.sql#L517). 
-- Since CMK/CEK is filled with dummies in the DACPAC, SqlPackage.exe shall always use the CMK/CEK in the database to encrypt/ decrypt column data rather than the dummy CMK/CEK. However:
-    - SqlPackage.exe tries to [encrypt column data](https://docs.microsoft.com/en-us/sql/relational-databases/security/encryption/configure-always-encrypted-using-dacpac?view=sql-server-ver15) using CMK/CEK in the DACPAC in the following publish situation: 1) Table n is already present in database, 2) table n already has data and 3) table n has no encrypted columns yet. Obviously, encryption of existing data in table will fail in this situation, since DACPAC has dummy values for CMK/CEK.
-    - To prevent this situation, an nullable dummy column with reference to the CEK is added to table n, see [here](https://github.com/rebremer/blog-sqldbalwaysencrypted-git/blob/master/data/testdacpacsql-dummycolumn-encrypted/model.sql#L52). In that case, SqlPackage.exe uses the CMK/CEK in the database to encrypt existing data in table n, which is good.
+-	DACPAC is filled with dummy values of CMK and CEK, see [here](https://github.com/rebremer/blog-sqldbalwaysencrypted-git/blob/master/data/testdacpacsql-unencrypted/model.sql#L504) and [here](https://github.com/rebremer/blog-sqldbalwaysencrypted-git/blob/master/data/testdacpacsql-unencrypted/model.sql#L511). 
+- Command line tool SqlPackage.exe is instructed to ignore the CMK and CEK from the DACPAC when publishing it to SQLDB (since the CMK and CEK are already set outside and present in SQLDB), see [here](https://github.com/rebremer/blog-sqldbalwaysencrypted-git/blob/master/deploymentscript/1_create_cmk_cek_akv.ps1#L17). 
+- Although CMK is filled with a dummy reference to a key vault key, the key vault key shall exist. For that purpse, a dummy key is created in the key creation script, see [here](https://github.com/rebremer/blog-sqldbalwaysencrypted-git/blob/master/deploymentscript/1_create_cmk_cek_akv.ps1#L39). 
 
 The following steps will be executed:
 

@@ -48,13 +48,7 @@ CREATE TABLE [dbo].[Patients] (
     [ZipCode]       CHAR (5)      NULL,
     [State]         CHAR (2)      NULL,
     [FootballClub]  NVARCHAR (50) NULL,
-    [BirthDate]     DATE          NOT NULL,
-    [Dummy]         NVARCHAR (50) COLLATE Latin1_General_BIN2  ENCRYPTED WITH (
-     COLUMN_ENCRYPTION_KEY = [CEK_Auto1],
-     ALGORITHM = N'AEAD_AES_256_CBC_HMAC_SHA_256',
-     ENCRYPTION_TYPE = DETERMINISTIC
-    ) NULL,
-    PRIMARY KEY CLUSTERED ([PatientId] ASC)
+    [BirthDate]     DATE          NOT NULL PRIMARY KEY CLUSTERED ([PatientId] ASC)
 );
 
 GO
@@ -510,7 +504,7 @@ GO
 CREATE COLUMN MASTER KEY [CMK_Auto1]
 WITH (
      KEY_STORE_PROVIDER_NAME = N'AZURE_KEY_VAULT',
-     KEY_PATH = N''
+     KEY_PATH = N'https://blogsqldbaeakvg.vault.azure.net/keys/dummyrbr'
 );
 
 GO

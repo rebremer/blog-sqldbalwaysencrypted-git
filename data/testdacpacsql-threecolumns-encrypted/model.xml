@@ -115,7 +115,7 @@
 		</Element>
 		<Element Type="SqlColumnMasterKey" Name="[CMK_Auto1]">
 			<Property Name="KeyStoreProviderName" Value="AZURE_KEY_VAULT" />
-			<Property Name="KeyPath" Value="" />
+			<Property Name="KeyPath" Value="https://blogsqldbaeakvg.vault.azure.net/keys/dummyrbr" />
 		</Element>
 		<Element Type="SqlUserDefinedDataType" Name="[dbo].[AccountNumber]">
 			<Property Name="Length" Value="15" />
@@ -546,6 +546,13 @@
 				<Entry>
 					<Element Type="SqlSimpleColumn" Name="[dbo].[Patients].[SSN]">
 						<Property Name="IsNullable" Value="False" />
+						<Property Name="EncryptionType" Value="1" />
+						<Property Name="EncryptionAlgorithmName" Value="AEAD_AES_256_CBC_HMAC_SHA_256" />
+						<Relationship Name="ColumnEncryptionKey">
+							<Entry>
+								<References Name="[CEK_Auto1]" />
+							</Entry>
+						</Relationship>
 						<Relationship Name="TypeSpecifier">
 							<Entry>
 								<Element Type="SqlTypeSpecifier">
@@ -562,6 +569,13 @@
 				</Entry>
 				<Entry>
 					<Element Type="SqlSimpleColumn" Name="[dbo].[Patients].[FirstName]">
+						<Property Name="EncryptionType" Value="2" />
+						<Property Name="EncryptionAlgorithmName" Value="AEAD_AES_256_CBC_HMAC_SHA_256" />
+						<Relationship Name="ColumnEncryptionKey">
+							<Entry>
+								<References Name="[CEK_Auto1]" />
+							</Entry>
+						</Relationship>
 						<Relationship Name="TypeSpecifier">
 							<Entry>
 								<Element Type="SqlTypeSpecifier">
@@ -691,6 +705,13 @@
 				<Entry>
 					<Element Type="SqlSimpleColumn" Name="[dbo].[Patients].[BirthDate]">
 						<Property Name="IsNullable" Value="False" />
+						<Property Name="EncryptionType" Value="2" />
+						<Property Name="EncryptionAlgorithmName" Value="AEAD_AES_256_CBC_HMAC_SHA_256" />
+						<Relationship Name="ColumnEncryptionKey">
+							<Entry>
+								<References Name="[CEK_Auto1]" />
+							</Entry>
+						</Relationship>
 						<Relationship Name="TypeSpecifier">
 							<Entry>
 								<Element Type="SqlTypeSpecifier">
@@ -702,30 +723,7 @@
 								</Element>
 							</Entry>
 						</Relationship>
-					</Element>
-				</Entry>
-				<Entry>
-					<Element Type="SqlSimpleColumn" Name="[dbo].[Patients].[Dummy]">
-						<Property Name="Collation" Value="Latin1_General_BIN2" />
-						<Property Name="EncryptionType" Value="1" />
-						<Property Name="EncryptionAlgorithmName" Value="AEAD_AES_256_CBC_HMAC_SHA_256" />
-						<Relationship Name="ColumnEncryptionKey">
-							<Entry>
-								<References Name="[CEK_Auto1]" />
-							</Entry>
-						</Relationship>
-						<Relationship Name="TypeSpecifier">
-							<Entry>
-								<Element Type="SqlTypeSpecifier">
-									<Property Name="Length" Value="50" />
-									<Relationship Name="Type">
-										<Entry>
-											<References ExternalSource="BuiltIns" Name="[nvarchar]" />
-										</Entry>
-									</Relationship>
-								</Element>
-							</Entry>
-						</Relationship>
+						<AttachedAnnotation Disambiguator="5" />
 					</Element>
 				</Entry>
 			</Relationship>
@@ -734,7 +732,6 @@
 					<References ExternalSource="BuiltIns" Name="[dbo]" />
 				</Entry>
 			</Relationship>
-			<AttachedAnnotation Disambiguator="5" />
 		</Element>
 		<Element Type="SqlUserDefinedDataType" Name="[dbo].[Phone]">
 			<Property Name="Length" Value="25" />

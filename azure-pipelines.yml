@@ -6,6 +6,7 @@ variables:
   #
   # 2. Unique environment variables,change it with your own
   SQLSERVER: 'blog-sqldbae-sqlvg<<your unique name>>'
+  # Make sure that the same AKV name is used in the DACPAC CMK, see https://github.com/rebremer/blog-sqldbalwaysencrypted-git/blob/master/data/testdacpacsql-unencrypted/model.sql#L507
   AKV: 'blogsqldbaeakvg<<your unique name>>'
   #
   # 3. Fixed Environment variables, no need for unique values

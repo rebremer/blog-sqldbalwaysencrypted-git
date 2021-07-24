@@ -15,7 +15,7 @@ $fileExe = "bin\sqlpackage.exe"
 # todo: parameterize dacpac such that 1 dacpac deployment script is needed
 #$params='/sf:"data\test-dacpac-sql-encrypted.dacpac" /a:Publish /AccessToken:' + $token + ' /tcs:"Server = ' + $env:SQLSERVER + '.database.windows.net; Database = ' + $env:SQLDATABASE + '; Column Encryption Setting=enabled;" /p:BlockOnPossibleDataLoss=false /AzureKeyVaultAuthMethod:ClientIdSecret /ClientId:' + $env:clientId + ' /Secret:' + $env:clientSecret + ' /p:ExcludeObjectType="ColumnEncryptionKeys" /p:ExcludeObjectType="ColumnMasterKeys"'
 $userPassword = Get-AzKeyVaultSecret -VaultName $env:AKV -Name "SQLPassword" -AsPlainText
-$params='/sf:"data\testdacpacsql-dummycolumn-encrypted.dacpac" /a:Publish /tcs:"Server = ' + $env:SQLSERVER + '.database.windows.net; Database = ' + $env:SQLDATABASE + '; User ID=' + $env:SQLLOGIN + ';Password="' + $userPassword + '"; Column Encryption Setting=enabled;" /p:BlockOnPossibleDataLoss=false /AzureKeyVaultAuthMethod:ClientIdSecret /ClientId:' + $env:clientId + ' /Secret:' + $env:clientSecret + ' /p:ExcludeObjectType="ColumnEncryptionKeys" /p:ExcludeObjectType="ColumnMasterKeys"'
+$params='/sf:"data\testdacpacsql-unencrypted.dacpac" /a:Publish /tcs:"Server = ' + $env:SQLSERVER + '.database.windows.net; Database = ' + $env:SQLDATABASE + '; User ID=' + $env:SQLLOGIN + ';Password="' + $userPassword + '"; Column Encryption Setting=enabled;" /p:BlockOnPossibleDataLoss=false /AzureKeyVaultAuthMethod:ClientIdSecret /ClientId:' + $env:clientId + ' /Secret:' + $env:clientSecret + ' /p:ExcludeObjectType="ColumnEncryptionKeys" /p:ExcludeObjectType="ColumnMasterKeys"'
 
 $paramsSplit=$params.split(" ")
 #
