@@ -1,4 +1,4 @@
-# Azure DevOps project that publishes a DACPAC to a SQLDB using always encrypted 
+# Azure DevOps project to publish DACPAC to Azure SQL with Always Encrypted 
 
 *TLTR: Create Azure DevOps project using azure-pipelines.yml, publish 1st DACPAC to SQLDB, add data to table, publish 2nd DACPAC to SQLDB creating encrypted columns and data*
 
